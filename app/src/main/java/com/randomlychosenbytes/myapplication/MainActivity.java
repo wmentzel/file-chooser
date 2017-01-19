@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         FileChooserDialogFragment fcDialog = FileChooserDialogFragment.newInstance(this, null);
 
-        fcDialog.setFileListener(new FileChooserDialogFragment.FileSelectionListener() {
+        fcDialog.setFileListener(new FileChooserDialogFragment.FileSelectionFinishedListener() {
             @Override
             public void onFileSelected(final File file) {
                 Log.i("info", file.getAbsolutePath());

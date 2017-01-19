@@ -6,12 +6,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -22,15 +20,15 @@ import java.util.List;
 
 public class FileChooserDialogFragment extends DialogFragment {
 
-    private static final String PARENT_DIR = "..";
-
     private Activity activity;
-    private ListView list;
+    private RecyclerView fileListRecyclerView;
+    private String extension = null;
+
+    private static final String PARENT_DIR = "..";
     private File currentPath;
-    private FileSelectionListener fileListener;
 
     // filter on file extension
-    private String extension = null;
+    private FileListAdapter adapter;
 
     public FileChooserDialogFragment() {
     }
@@ -48,13 +46,13 @@ public class FileChooserDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        list = new ListView(activity);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        fileListRecyclerView = new RecyclerView(activity);
+        fileListRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        adapter = new FileListAdapter(new LinkedList<File>(), new FileListAdapter.FileNavigationListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int which, long id) {
-
-                String fileChosen = (String) list.getItemAtPosition(which);
-                File chosenFile = getChosenFile(fileChosen);
+            public void onFileSelected(File file) {
+                Log.i("info", "Received!");
+                File chosenFile = getChosenFile(file);
 
                 if (chosenFile.isDirectory()) {
                     listDirectory(chosenFile);
@@ -67,7 +65,9 @@ public class FileChooserDialogFragment extends DialogFragment {
             }
         });
 
-        builder.setView(list);
+        fileListRecyclerView.setAdapter(adapter);
+
+        builder.setView(fileListRecyclerView);
         return builder.create();
     }
 
@@ -80,7 +80,6 @@ public class FileChooserDialogFragment extends DialogFragment {
 
         // full size, otherwise the dialog changes size depending on how much files there are to display
         getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
         listDirectory(Environment.getExternalStorageDirectory());
     }
 
@@ -133,47 +132,45 @@ public class FileChooserDialogFragment extends DialogFragment {
             Log.i("Current path", path.getAbsolutePath());
             this.currentPath = path;
 
-            List<String> overallList = new LinkedList<>();
+            List<File> overallList = new LinkedList<>();
 
             if (path.getParentFile() != null) {
-                overallList.add(PARENT_DIR);
+                overallList.add(new File(PARENT_DIR));
             }
 
             Collections.sort(dirList);
             Collections.sort(fileList);
 
-            for (File dir : dirList) {
-                overallList.add(dir.getName());
-            }
-
-            for (File file : fileList) {
-                overallList.add(file.getName());
-            }
+            overallList.addAll(dirList);
+            overallList.addAll(fileList);
 
             // listDirectory the user interface
             Dialog dialog = getDialog();
             dialog.setTitle(currentPath.getPath());
 
-            list.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, overallList));
+            adapter.setFiles(overallList);
+            adapter.notifyDataSetChanged();
         }
-    }
-
-    public void setFileListener(FileSelectionListener fileListener) {
-        this.fileListener = fileListener;
     }
 
     /**
      * Convert a relative filename into an actual File object.
      */
-    private File getChosenFile(String fileChosen) {
-        if (fileChosen.equals(PARENT_DIR)) {
+    private File getChosenFile(File chosenFile) {
+        if (chosenFile.equals(new File(PARENT_DIR))) {
             return currentPath.getParentFile();
         } else {
-            return new File(currentPath, fileChosen);
+            return chosenFile;
         }
     }
 
-    public interface FileSelectionListener {
+    private FileSelectionFinishedListener fileListener;
+
+    public void setFileListener(FileSelectionFinishedListener fileListener) {
+        this.fileListener = fileListener;
+    }
+
+    public interface FileSelectionFinishedListener {
         void onFileSelected(File file);
     }
 }
