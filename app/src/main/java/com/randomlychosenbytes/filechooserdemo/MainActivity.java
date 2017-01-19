@@ -1,4 +1,4 @@
-package com.randomlychosenbytes.myapplication;
+package com.randomlychosenbytes.filechooserdemo;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.randomlychosenbytes.myapplication.FileChooserDialogFragment;
+import com.randomlychosenbytes.myapplication.R;
 
 import java.io.File;
 
