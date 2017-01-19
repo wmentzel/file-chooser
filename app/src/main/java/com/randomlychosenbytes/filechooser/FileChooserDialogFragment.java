@@ -1,4 +1,4 @@
-package com.randomlychosenbytes.myapplication;
+package com.randomlychosenbytes.filechooser;
 
 import android.app.Activity;
 import android.app.AlertDialog;

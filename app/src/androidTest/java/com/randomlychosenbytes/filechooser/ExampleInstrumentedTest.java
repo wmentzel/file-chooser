@@ -1,4 +1,4 @@
-package com.randomlychosenbytes.myapplication;
+package com.randomlychosenbytes.filechooser;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

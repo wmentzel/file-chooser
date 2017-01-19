@@ -1,4 +1,4 @@
-package com.randomlychosenbytes.myapplication;
+package com.randomlychosenbytes.filechooser;
 
 import org.junit.Test;
 

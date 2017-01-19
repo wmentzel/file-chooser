@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.randomlychosenbytes.myapplication.FileChooserDialogFragment;
-import com.randomlychosenbytes.myapplication.R;
+import com.randomlychosenbytes.filechooser.FileChooserDialogFragment;
+import com.randomlychosenbytes.filechooser.R;
 
 import java.io.File;
 

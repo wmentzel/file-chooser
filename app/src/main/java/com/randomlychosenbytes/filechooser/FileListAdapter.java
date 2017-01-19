@@ -1,4 +1,4 @@
-package com.randomlychosenbytes.myapplication;
+package com.randomlychosenbytes.filechooser;
 
 /**
  * Created by Willi Mentzel on 19.01.2017.
