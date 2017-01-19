@@ -12,6 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -28,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    public void onOpenFileChooserDialogButton(View view){
         getPrivileges();
     }
 
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFileSelected(final File file) {
                 Log.i("info", file.getAbsolutePath());
+                ((TextView) findViewById(R.id.textView)).setText(file.getAbsolutePath());
             }
         });
 

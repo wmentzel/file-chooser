@@ -13,5 +13,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="A really simple file chooser for Android." />
+        android:text="A really simple file chooser for Android."
+        android:id="@+id/textView" />
+
+    <Button
+        android:text="Open File Chooser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/openDialogButton"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:onClick="onOpenFileChooserDialogButton"/>
 </RelativeLayout>
