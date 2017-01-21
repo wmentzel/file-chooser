@@ -16,6 +16,8 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.List;
 
+import static android.R.attr.textColorTertiary;
+
 /**
  * FoodListAdapter
  */
@@ -56,6 +58,9 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
 
         if(file.isFile()) {
             holder.fileNameTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+        }
+        else{
+            holder.fileNameTextView.setTextColor(ContextCompat.getColor(context, android.R.color.tertiary_text_dark));
         }
 
         //
