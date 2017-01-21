@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.WindowManager;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,6 +19,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class FileChooserDialogFragment extends DialogFragment {
 
@@ -46,12 +50,14 @@ public class FileChooserDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        fileListRecyclerView = new RecyclerView(activity);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_file_chooser, null);
+        fileListRecyclerView = (RecyclerView) view.findViewById(R.id.fileListRecyclerView);
         fileListRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
+
         adapter = new FileListAdapter(getActivity(), new LinkedList<File>(), new FileListAdapter.FileNavigationListener() {
             @Override
             public void onFileSelected(File file) {
-                Log.i("info", "Received!");
                 File chosenFile = getChosenFile(file);
 
                 if (chosenFile.isDirectory()) {
@@ -67,7 +73,15 @@ public class FileChooserDialogFragment extends DialogFragment {
 
         fileListRecyclerView.setAdapter(adapter);
 
-        builder.setView(fileListRecyclerView);
+        builder.setView(view);
+
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FileChooserDialogFragment.this.dismiss();
+            }
+        });
+
         return builder.create();
     }
 
@@ -79,7 +93,7 @@ public class FileChooserDialogFragment extends DialogFragment {
         super.onStart();
 
         // full size, otherwise the dialog changes size depending on how much files there are to display
-        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        getDialog().getWindow().setLayout(MATCH_PARENT, MATCH_PARENT);
         listDirectory(Environment.getExternalStorageDirectory());
     }
 
@@ -129,7 +143,7 @@ public class FileChooserDialogFragment extends DialogFragment {
                 fileList = Arrays.asList(files);
             }
 
-            Log.i("Current path", path.getAbsolutePath());
+            Log.i("path=", path.getAbsolutePath());
             this.currentPath = path;
 
             List<File> overallList = new LinkedList<>();
