@@ -1,0 +1,2 @@
+include ':filechooserdemo', ':filechooserlibrary'
+project(':filechooserlibrary').projectDir = new File('../file-chooser-library/filechooserlibrary')
