@@ -6,11 +6,13 @@ package com.randomlychosenbytes.filechooser;
 
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -18,17 +20,12 @@ import java.util.List;
 
 import static android.R.attr.textColorTertiary;
 
-/**
- * FoodListAdapter
- */
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemViewHolder> {
 
     private List<File> files;
     private FileNavigationListener navigationListener;
     private Context context;
-    /**
-     * Constructor
-     */
+
     public FileListAdapter(Context context, List<File> files, FileNavigationListener navigationListener) {
         this.context = context;
         this.files = files;
@@ -57,10 +54,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
         holder.fileNameTextView.setText(files.get(position).getName());
 
         if(file.isFile()) {
-            holder.fileNameTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+            holder.fileNameTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            holder.iconImageView.setVisibility(View.GONE);
         }
         else{
             holder.fileNameTextView.setTextColor(ContextCompat.getColor(context, android.R.color.tertiary_text_dark));
+            holder.iconImageView.setVisibility(View.VISIBLE);
         }
 
         //
@@ -80,12 +79,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+        public ImageView iconImageView;
         public TextView fileNameTextView;
         public View v;
 
         public ItemViewHolder(View v) {
             super(v);
             this.v = v;
+            iconImageView = (ImageView) v.findViewById(R.id.iconImageView);
             fileNameTextView = (TextView) v.findViewById(R.id.fileNameTextView);
         }
     }
