@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_folder_black"
             android:id="@+id/iconImageView"
-            android:tint="@android:color/tertiary_text_dark"/>
+            android:tint="@color/dark_gray"/>
 
         <TextView
             android:id="@+id/fileNameTextView"
