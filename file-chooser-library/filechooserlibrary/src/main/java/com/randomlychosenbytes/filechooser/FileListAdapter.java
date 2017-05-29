@@ -4,21 +4,18 @@ package com.randomlychosenbytes.filechooser;
  * Created by Willi Mentzel on 19.01.2017.
  */
 
-
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.List;
-
-import static android.R.attr.textColorTertiary;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemViewHolder> {
 
@@ -61,7 +58,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
         //
         // Event
         //
-        holder.v.setOnClickListener(new View.OnClickListener() {
+        holder.v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigationListener.onFileSelected(file);

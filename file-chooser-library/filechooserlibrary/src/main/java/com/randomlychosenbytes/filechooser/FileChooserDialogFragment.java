@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,7 +76,7 @@ public class FileChooserDialogFragment extends DialogFragment {
 
         builder.setView(view);
 
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.cancel), new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 FileChooserDialogFragment.this.dismiss();
