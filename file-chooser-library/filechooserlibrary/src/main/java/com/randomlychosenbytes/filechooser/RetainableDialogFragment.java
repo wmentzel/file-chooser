@@ -3,10 +3,6 @@ package com.randomlychosenbytes.filechooser;
 import android.app.Dialog;
 import android.app.DialogFragment;
 
-/**
- * Created by willi on 28.05.17.
- */
-
 public class RetainableDialogFragment extends DialogFragment {
 
     public RetainableDialogFragment() {

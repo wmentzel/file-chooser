@@ -1,9 +1,5 @@
 package com.randomlychosenbytes.filechooser;
 
-/**
- * Created by Willi Mentzel on 19.01.2017.
- */
-
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -23,13 +19,13 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
     private FileNavigationListener navigationListener;
     private Context context;
 
-    public FileListAdapter(Context context, List<File> files, FileNavigationListener navigationListener) {
+    FileListAdapter(Context context, List<File> files, FileNavigationListener navigationListener) {
         this.context = context;
         this.files = files;
         this.navigationListener = navigationListener;
     }
 
-    public void setFiles(List<File> files) {
+    void setFiles(List<File> files) {
         this.files = files;
     }
 
@@ -71,16 +67,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ItemVi
         return files.size();
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
-        public ImageView iconImageView;
-        public TextView fileNameTextView;
-        public View v;
+    class ItemViewHolder extends RecyclerView.ViewHolder {
+        ImageView iconImageView;
+        TextView fileNameTextView;
+        View v;
 
-        public ItemViewHolder(View v) {
+        ItemViewHolder(View v) {
             super(v);
             this.v = v;
-            iconImageView = (ImageView) v.findViewById(R.id.iconImageView);
-            fileNameTextView = (TextView) v.findViewById(R.id.fileNameTextView);
+            iconImageView = v.findViewById(R.id.iconImageView);
+            fileNameTextView = v.findViewById(R.id.fileNameTextView);
         }
     }
 

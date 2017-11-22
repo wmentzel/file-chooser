@@ -25,7 +25,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 public class FileChooserDialogFragment extends RetainableDialogFragment {
 
     private Activity activity;
-    private RecyclerView fileListRecyclerView;
     private String extension = null;
 
     private static final String PARENT_DIR = "..";
@@ -52,7 +51,7 @@ public class FileChooserDialogFragment extends RetainableDialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_file_chooser, null);
-        fileListRecyclerView = (RecyclerView) view.findViewById(R.id.fileListRecyclerView);
+        RecyclerView fileListRecyclerView = view.findViewById(R.id.fileListRecyclerView);
         fileListRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
         adapter = new FileListAdapter(getActivity(), new LinkedList<File>(), new FileListAdapter.FileNavigationListener() {
