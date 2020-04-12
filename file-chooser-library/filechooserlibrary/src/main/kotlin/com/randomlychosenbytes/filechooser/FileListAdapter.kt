@@ -12,21 +12,21 @@ import java.io.File
 
 class FileListAdapter(
         private val context: Context?,
-        private var files: List<File>,
+        var files: List<File>,
         private val onFileSelected: (File) -> Unit
 ) : RecyclerView.Adapter<FileListAdapter.ItemViewHolder>() {
-    fun setFiles(files: List<File>) {
-        this.files = files
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_file, parent, false)
-        return ItemViewHolder(v)
-    }
+    override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+    ) = ItemViewHolder(LayoutInflater
+            .from(parent.context)
+            .inflate(R.layout.recyclerview_item_file, parent, false))
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val file = files[position]
         holder.fileNameTextView.text = files[position].name
+
         if (file.isFile) {
             holder.fileNameTextView.setTextColor(ContextCompat.getColor(context!!, R.color.colorPrimary))
             holder.iconImageView.visibility = View.GONE
@@ -35,9 +35,6 @@ class FileListAdapter(
             holder.iconImageView.visibility = View.VISIBLE
         }
 
-        //
-        // Event
-        //
         holder.v.setOnClickListener { onFileSelected(file) }
     }
 
@@ -46,12 +43,7 @@ class FileListAdapter(
     }
 
     inner class ItemViewHolder(var v: View) : RecyclerView.ViewHolder(v) {
-        var iconImageView: ImageView
-        var fileNameTextView: TextView
-
-        init {
-            iconImageView = v.findViewById(R.id.iconImageView)
-            fileNameTextView = v.findViewById(R.id.fileNameTextView)
-        }
+        var iconImageView = v.findViewById<ImageView>(R.id.iconImageView)
+        var fileNameTextView = v.findViewById<TextView>(R.id.fileNameTextView)
     }
 }

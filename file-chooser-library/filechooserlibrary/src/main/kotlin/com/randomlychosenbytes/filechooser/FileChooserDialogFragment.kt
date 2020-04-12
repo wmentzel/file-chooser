@@ -14,19 +14,18 @@ import java.io.FileFilter
 import java.util.*
 
 class FileChooserDialogFragment : RetainableDialogFragment() {
-    private var activity: Activity? = null
-    private var extension: String? = null
-    private var currentPath: File? = null
+    lateinit var activity: Activity
+    var extension: String? = null
+    lateinit var currentPath: File
     lateinit var onFileSelectionFinished: (File) -> Unit
+    lateinit var adapter: FileListAdapter
 
-    // filter on file extension
-    private var adapter: FileListAdapter? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity)
-        val inflater = getActivity()!!.layoutInflater
-        val view = inflater.inflate(R.layout.dialog_file_chooser, null)
-        val fileListRecyclerView: RecyclerView = view.findViewById(R.id.fileListRecyclerView)
+        val view = requireActivity().layoutInflater.inflate(R.layout.dialog_file_chooser, null)
+
+        val fileListRecyclerView = view.findViewById<RecyclerView>(R.id.fileListRecyclerView)
         fileListRecyclerView.layoutManager = LinearLayoutManager(activity)
+
         adapter = FileListAdapter(getActivity(), LinkedList()) { file: File ->
             val chosenFile = getChosenFile(file)
             if (chosenFile.isDirectory) {
@@ -37,9 +36,11 @@ class FileChooserDialogFragment : RetainableDialogFragment() {
             }
         }
         fileListRecyclerView.adapter = adapter
-        builder.setView(view)
-        builder.setNegativeButton(getString(R.string.cancel)) { dialogInterface, i -> dismiss() }
-        return builder.create()
+
+        return AlertDialog.Builder(activity).apply {
+            setView(view)
+            setNegativeButton(getString(R.string.cancel)) { _, i -> dismiss() }
+        }.create()
     }
 
     /**
@@ -49,76 +50,75 @@ class FileChooserDialogFragment : RetainableDialogFragment() {
         super.onStart()
 
         // full size, otherwise the dialog changes size depending on how much files there are to display
-        dialog!!.window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        requireDialog().window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         listDirectory(Environment.getExternalStorageDirectory())
     }
 
     /**
      * Sort, filter and display the files for the given path.
      */
-    fun listDirectory(path: File) {
-        if (path.exists()) {
-            val dirs = path.listFiles { file -> file.isDirectory && file.canRead() }
-            val files = path.listFiles(FileFilter { file ->
-                if (file.isDirectory) {
-                    return@FileFilter false
-                }
-                if (!file.canRead()) {
-                    false
-                } else if (extension == null) {
-                    true
-                } else {
-                    file.name.toLowerCase().endsWith(extension!!)
-                }
-            })
-            val dirList: List<File>
-            val fileList: List<File>
-            dirList = if (dirs == null) {
-                LinkedList()
-            } else {
-                Arrays.asList(*dirs)
-            }
-            fileList = if (files == null) {
-                LinkedList()
-            } else {
-                Arrays.asList(*files)
-            }
-            Log.i("path=", path.absolutePath)
-            currentPath = path
-            val overallList: MutableList<File> = LinkedList()
-            if (path.parentFile != null) {
-                overallList.add(File(PARENT_DIR))
-            }
-            Collections.sort(dirList)
-            Collections.sort(fileList)
-            overallList.addAll(dirList)
-            overallList.addAll(fileList)
+    private fun listDirectory(path: File) {
 
-            // listDirectory the user interface
-            val dialog = dialog
-            dialog!!.setTitle(currentPath!!.path)
-            adapter!!.setFiles(overallList)
-            adapter!!.notifyDataSetChanged()
+        if (!path.exists()) {
+            return
         }
+
+        val dirList = path.listFiles { file -> file.isDirectory && file.canRead() }?.filterNotNull()
+                ?: emptyList()
+
+        val fileList = path.listFiles(FileFilter(fun(file: File): Boolean {
+            if (file.isDirectory) {
+                return false
+            }
+
+            if (!file.canRead()) {
+                return false
+            }
+
+            return extension.let {
+
+                if (it == null) {
+                    return true
+                } else {
+                    file.name.toLowerCase(Locale.getDefault()).endsWith(it)
+                }
+            }
+        }))?.filterNotNull() ?: emptyList()
+
+        Log.i("path=", path.absolutePath)
+
+        currentPath = path
+
+        val overallList = mutableListOf<File>()
+
+        if (path.parentFile != null) {
+            overallList += File(PARENT_DIR)
+        }
+
+        overallList += dirList.sorted()
+        overallList += fileList.sorted()
+
+        // listDirectory the user interface
+        requireDialog().setTitle(currentPath.path)
+        adapter.files = overallList
+        adapter.notifyDataSetChanged()
     }
 
     /**
      * Convert a relative filename into an actual File object.
      */
-    private fun getChosenFile(chosenFile: File): File {
-        return if (chosenFile == File(PARENT_DIR)) {
-            currentPath!!.parentFile
-        } else {
-            chosenFile
-        }
+    private fun getChosenFile(chosenFile: File) = if (chosenFile == File(PARENT_DIR)) {
+        currentPath.parentFile
+    } else {
+        chosenFile
     }
 
     companion object {
         private const val PARENT_DIR = ".."
-        fun newInstance(activity: Activity?, extension: String?, onFileSelectionFinished: (File) -> Unit): FileChooserDialogFragment {
+        fun newInstance(activity: Activity, extension: String?, onFileSelectionFinished: (File) -> Unit): FileChooserDialogFragment {
             val frag = FileChooserDialogFragment()
             frag.activity = activity
-            frag.extension = extension?.toLowerCase()
+            frag.extension = extension?.toLowerCase(Locale.getDefault())
             frag.onFileSelectionFinished = onFileSelectionFinished
             return frag
         }
