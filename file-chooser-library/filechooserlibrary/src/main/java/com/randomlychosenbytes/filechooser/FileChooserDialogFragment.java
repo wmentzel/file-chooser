@@ -114,16 +114,16 @@ public class FileChooserDialogFragment extends RetainableDialogFragment {
                 @Override
                 public boolean accept(File file) {
 
-                    if (!file.isDirectory()) {
-                        if (!file.canRead()) {
-                            return false;
-                        } else if (extension == null) {
-                            return true;
-                        } else {
-                            return file.getName().toLowerCase().endsWith(extension);
-                        }
-                    } else {
+                    if (file.isDirectory()) {
                         return false;
+                    }
+
+                    if (!file.canRead()) {
+                        return false;
+                    } else if (extension == null) {
+                        return true;
+                    } else {
+                        return file.getName().toLowerCase().endsWith(extension);
                     }
                 }
             });
