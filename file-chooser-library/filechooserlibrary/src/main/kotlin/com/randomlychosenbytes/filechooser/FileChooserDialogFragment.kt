@@ -14,11 +14,11 @@ import java.io.FileFilter
 import java.util.*
 
 class FileChooserDialogFragment : RetainableDialogFragment() {
-    lateinit var activity: Activity
-    var extension: String? = null
-    lateinit var currentPath: File
-    lateinit var onFileSelectionFinished: (File) -> Unit
-    lateinit var adapter: FileListAdapter
+    private lateinit var activity: Activity
+    private var extension: String? = null
+    private lateinit var currentPath: File
+    private lateinit var onFileSelectionFinished: (File) -> Unit
+    private lateinit var adapter: FileListAdapter
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_file_chooser, null)
@@ -26,7 +26,7 @@ class FileChooserDialogFragment : RetainableDialogFragment() {
         val fileListRecyclerView = view.findViewById<RecyclerView>(R.id.fileListRecyclerView)
         fileListRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        adapter = FileListAdapter(getActivity(), LinkedList()) { file: File ->
+        adapter = FileListAdapter(getActivity()!!, emptyList()) { file: File ->
             val chosenFile = getChosenFile(file)
             if (chosenFile.isDirectory) {
                 listDirectory(chosenFile)
@@ -39,7 +39,7 @@ class FileChooserDialogFragment : RetainableDialogFragment() {
 
         return AlertDialog.Builder(activity).apply {
             setView(view)
-            setNegativeButton(getString(R.string.cancel)) { _, i -> dismiss() }
+            setNegativeButton(getString(R.string.cancel)) { _, _ -> dismiss() }
         }.create()
     }
 
@@ -115,12 +115,10 @@ class FileChooserDialogFragment : RetainableDialogFragment() {
 
     companion object {
         private const val PARENT_DIR = ".."
-        fun newInstance(activity: Activity, extension: String?, onFileSelectionFinished: (File) -> Unit): FileChooserDialogFragment {
-            val frag = FileChooserDialogFragment()
-            frag.activity = activity
-            frag.extension = extension?.toLowerCase(Locale.getDefault())
-            frag.onFileSelectionFinished = onFileSelectionFinished
-            return frag
+        fun newInstance(activity: Activity, extension: String?, onFileSelectionFinished: (File) -> Unit) = FileChooserDialogFragment().apply {
+            this.activity = activity
+            this.extension = extension?.toLowerCase(Locale.getDefault())
+            this.onFileSelectionFinished = onFileSelectionFinished
         }
     }
 }
